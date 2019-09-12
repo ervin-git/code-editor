@@ -24,7 +24,6 @@
 
 <VBox prefHeight="600.0" prefWidth="900.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="application.Controller">
   <children>
-    <TextField disable="false" editable="true" focusTraversable="true" prefWidth="200.0" visible="false" />
     <MenuBar VBox.vgrow="NEVER">
       <menus>
         <Menu disable="false" mnemonicParsing="false" text="Project">
@@ -67,17 +66,17 @@
         </Menu>
         <Menu mnemonicParsing="false" text="Complie">
           <items>
-            <MenuItem mnemonicParsing="false" text=" " />
+            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Execute">
           <items>
-            <MenuItem mnemonicParsing="false" text=" " />
+            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Statistics">
           <items>
-            <MenuItem mnemonicParsing="false" text=" " />
+            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
           </items>
         </Menu>
       </menus>
@@ -105,6 +104,7 @@
                     <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
                   </textFill>
                 </Label>
+                <TextArea fx:id="codeArea" disable="false" layoutX="14.0" layoutY="38.0" prefHeight="493.0" prefWidth="402.0" text="&#10;" visible="true" wrapText="true" />
               </children>
             </AnchorPane>
           </content>
