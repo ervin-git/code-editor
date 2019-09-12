@@ -49,7 +49,7 @@ public class Create {
             @Override
             public void handle(ActionEvent event) {
                 DirectoryChooser directoryChooser = new DirectoryChooser();
-                File selectedDirectory = directoryChooser.showDialog(Main.getStage());
+                File selectedDirectory = directoryChooser.showDialog(new Stage());
                 textField2.setText(selectedDirectory.getAbsoluteFile().toString());
             }
         });

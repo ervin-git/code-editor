@@ -2,9 +2,7 @@ package application;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -41,6 +39,9 @@ public class Controller {
     @FXML
     private TextArea codeArea;
 
+    @FXML
+    private TreeView<File> treeView;
+
 
     @FXML
     void close(ActionEvent event) {
@@ -56,18 +57,41 @@ public class Controller {
         FileChooser directoryChooser = new FileChooser();
         File selectedDirectory = directoryChooser.showOpenDialog(new Stage());
         if (selectedDirectory != null) {
-            try {
-                Scanner s = new Scanner(selectedDirectory);
-                while (s.hasNextLine()) {
-                    System.out.println(s.nextLine());
-                    codeArea.appendText(s.nextLine());
+            javafx.application.Platform.runLater( () -> {
+                try {
+                    Scanner s = new Scanner(selectedDirectory);
+                    while (s.hasNextLine()) {
+                        codeArea.appendText(s.nextLine());
+                    }
+                } catch (FileNotFoundException | NullPointerException ex) {
+                    System.err.println(ex);
                 }
-            } catch (FileNotFoundException ex) {
-                System.err.println(ex);
-            } catch (NullPointerException ex) {
-                System.err.println(ex);
-            }
+            });
+        }
+    }
 
+    private void findFiles(File dir, TreeItem<File> parent) {
+        TreeItem<File> root = new TreeItem<>(dir);
+        root.setExpanded(true);
+        try {
+            File[] files = dir.listFiles();
+            System.out.println(dir.listFiles());
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    System.out.println("directory:" + file.getCanonicalPath());
+                    findFiles(file, root);
+                } else {
+                    System.out.println("     file:" + file.getCanonicalPath());
+                    root.getChildren().add(new TreeItem<>(file));
+                }
+            }
+            if (parent == null) {
+                treeView.setRoot(root);
+            } else {
+                parent.getChildren().add(root);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -82,6 +106,9 @@ public class Controller {
         assert create != null : "fx:id=\"create\" was not injected: check your FXML file 'codeeditor.fxml'.";
         assert open != null : "fx:id=\"open\" was not injected: check your FXML file 'codeeditor.fxml'.";
         assert save != null : "fx:id=\"save\" was not injected: check your FXML file 'codeeditor.fxml'.";
+        assert treeView != null;
+
+        findFiles(new File("src/"), null);
     }
 }
 

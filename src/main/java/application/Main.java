@@ -11,11 +11,8 @@ import java.util.Objects;
 
 public class Main extends Application {
 
-    private static Stage stage;
-
     @Override
     public void start(Stage primaryStage) throws Exception {
-        stage = primaryStage;
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("codeeditor.fxml")));
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         int width = gd.getDisplayMode().getWidth();
@@ -31,9 +28,4 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
-    public static Stage getStage() {
-        return stage;
-    }
-
 }
