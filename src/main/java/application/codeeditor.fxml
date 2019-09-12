@@ -24,14 +24,15 @@
 
 <VBox prefHeight="600.0" prefWidth="900.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="application.Controller">
   <children>
-    <MenuBar VBox.vgrow="NEVER" >
+    <TextField disable="false" editable="true" focusTraversable="true" prefWidth="200.0" visible="false" />
+    <MenuBar VBox.vgrow="NEVER">
       <menus>
-        <Menu disable="false" mnemonicParsing="false" text="Project"  >
-          <items> 
-            <MenuItem  fx:id="menuItem" onAction="#changeText"   mnemonicParsing="false" text="Open" />
-            <MenuItem  fx:id="menuItem" onAction="#changeText" mnemonicParsing="false" text="Create" />
-            <MenuItem  fx:id="menuItem" onAction="#changeText"  mnemonicParsing="false" text="Close" />
-            <MenuItem  fx:id="menuItem" onAction="#changeText" mnemonicParsing="false" text="Save" />
+        <Menu disable="false" mnemonicParsing="false" text="Project">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#open" text="Open" visible="true" fx:id="open" />
+            <MenuItem mnemonicParsing="false" onAction="#create" text="Create" fx:id="create" />
+            <MenuItem mnemonicParsing="false" onAction="#close" text="Close" fx:id="close" />
+            <MenuItem mnemonicParsing="false" onAction="#save" text="Save" fx:id="save" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="File">
