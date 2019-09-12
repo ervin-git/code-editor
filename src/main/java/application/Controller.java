@@ -1,20 +1,43 @@
 package application;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+
+
+import java.awt.List;
+import javafx.stage.FileChooser;
+
+import java.beans.EventHandler;
+import java.io.*;
+import javafx.scene.Parent;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
+
+
+
+
+
+
+
+
 
 public class Controller {
+	
+	ArrayList<Project>projects= new ArrayList<Project>();
+
     @FXML
     private ResourceBundle resources;
 
@@ -32,16 +55,15 @@ public class Controller {
 
     @FXML
     private MenuItem save;
-
+    
     @FXML
     private TextField createText;
-
+    
     @FXML
     private TextArea codeArea;
-
+    
     @FXML
-    private TreeView<File> treeView;
-
+    private TreeView tree;
 
     @FXML
     void close(ActionEvent event) {
@@ -49,56 +71,30 @@ public class Controller {
 
     @FXML
     public void create(ActionEvent event) {
-        create.setOnAction(e -> Create.display("Create"));
+    	create.setOnAction(e ->Create.display("Create"));
     }
 
     @FXML
     void open(ActionEvent event) throws IOException {
-        FileChooser directoryChooser = new FileChooser();
-        File selectedDirectory = directoryChooser.showOpenDialog(new Stage());
-        if (selectedDirectory != null) {
-            javafx.application.Platform.runLater( () -> {
-                try {
-                    Scanner s = new Scanner(selectedDirectory);
-                    while (s.hasNextLine()) {
-                        codeArea.appendText(s.nextLine());
-                    }
+    	DirectoryChooser directoryChooser=new DirectoryChooser();
+    	File selectedDirectory = directoryChooser.showDialog(Main.getStage());
+    	String fileName=selectedDirectory.getName();
+    	String location=selectedDirectory.getAbsolutePath();
+    	//
 
-                    findFiles(selectedDirectory.getParentFile(), null);
-                } catch (FileNotFoundException | NullPointerException ex) {
-                    System.err.println(ex);
-                }
-            });
-        }
+    	TreeItem<String> rootItem = new TreeItem<String> (fileName);
+        rootItem.setExpanded(true);
+        tree.setRoot(rootItem);
+        tree = new TreeView<String> (rootItem);    
+        System.out.println(tree.getRoot());		
+         
+         
+   
     }
+    
+    
 
-    private void findFiles(File dir, TreeItem<File> parent) {
-        TreeItem<File> root = new TreeItem<>(dir);
-        root.setExpanded(true);
-        try {
-            File[] files = dir.listFiles();
-            System.out.println(dir.listFiles());
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    System.out.println("directory:" + file.getCanonicalPath());
-                    findFiles(file, root);
-                } else {
-                    System.out.println("     file:" + file.getCanonicalPath());
-                    root.getChildren().add(new TreeItem<>(file));
-                }
-            }
-            if (parent == null) {
-                treeView.setRoot(root);
-            } else {
-                parent.getChildren().add(root);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @FXML
+	@FXML
     void save(ActionEvent event) {
     }
 
@@ -108,7 +104,11 @@ public class Controller {
         assert create != null : "fx:id=\"create\" was not injected: check your FXML file 'codeeditor.fxml'.";
         assert open != null : "fx:id=\"open\" was not injected: check your FXML file 'codeeditor.fxml'.";
         assert save != null : "fx:id=\"save\" was not injected: check your FXML file 'codeeditor.fxml'.";
-        assert treeView != null;
+        
+   
+
+
     }
+
 }
 
