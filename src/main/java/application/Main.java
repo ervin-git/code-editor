@@ -7,18 +7,16 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.util.Objects;
 
 public class Main extends Application {
 
-	private static Stage stage;
+    private static Stage stage;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-    	stage=primaryStage;
-        Parent root = FXMLLoader.load(getClass().getResource("codeeditor.fxml"));
+        stage = primaryStage;
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("codeeditor.fxml")));
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         int width = gd.getDisplayMode().getWidth();
         int height = gd.getDisplayMode().getHeight();
@@ -26,16 +24,16 @@ public class Main extends Application {
         primaryStage.setTitle("Code Editor v1.0");
         primaryStage.setScene(scene);
         primaryStage.show();
-      
+
     }
 
 
     public static void main(String[] args) {
         launch(args);
     }
+
     public static Stage getStage() {
-    	return stage;
+        return stage;
     }
-   
-}
+
 }
