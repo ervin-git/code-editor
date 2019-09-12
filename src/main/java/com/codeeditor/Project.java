@@ -3,16 +3,18 @@ import java.util.* ;
 
 public class Project {
 	private String name;
+	private String main;
 	private String file1=null,file2=null;
 	private List<String>library;
 	
 	public Project() {
 	}
-	public Project(String a,String b,String c,List<String> d) {
+	public Project(String a,String b,String c,String d,List<String> e) {
 		name=a;
-		file1=b;
-		file2=c;
-		library=d;
+		main=b;
+		file1=c;
+		file2=d;
+		library=e;
 	}
 	public String getName() {
 		return name;
@@ -22,6 +24,9 @@ public class Project {
 	}
 	public String getFile2() {
 		return file2;
+	}
+	public String getMain() {
+		return main;
 	}
 	public List<String> getLibrary(){
 		return library;
