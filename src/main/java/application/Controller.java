@@ -63,6 +63,8 @@ public class Controller {
                     while (s.hasNextLine()) {
                         codeArea.appendText(s.nextLine());
                     }
+
+                    findFiles(selectedDirectory.getParentFile(), null);
                 } catch (FileNotFoundException | NullPointerException ex) {
                     System.err.println(ex);
                 }
@@ -107,8 +109,6 @@ public class Controller {
         assert open != null : "fx:id=\"open\" was not injected: check your FXML file 'codeeditor.fxml'.";
         assert save != null : "fx:id=\"save\" was not injected: check your FXML file 'codeeditor.fxml'.";
         assert treeView != null;
-
-        findFiles(new File("src/"), null);
     }
 }
 
