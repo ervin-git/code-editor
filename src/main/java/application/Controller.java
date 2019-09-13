@@ -87,7 +87,7 @@ public class Controller {
 
     @FXML
     void save(ActionEvent event) {
-        if (activeFile.exists()) {
+        if (activeFile.exists() && activeFile != null) {
             ObservableList<CharSequence> paragraph = codeArea.getParagraphs();
             Iterator<CharSequence> iter = paragraph.iterator();
             try {
