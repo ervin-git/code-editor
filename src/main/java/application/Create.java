@@ -1,7 +1,5 @@
 package application;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -27,31 +25,25 @@ public class Create {
         window.setMinHeight(250);
         window.setMinWidth(250);
         Button enter = new Button("Enter");
-        enter.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (textField.getText() != null && textField2.getText() != null) {
-                    StringBuffer sBuffer = new StringBuffer();
-                    sBuffer.append(textField2.getText()).append("/").append(textField.getText());
-                    textField.clear();
-                    textField2.clear();
-                    File file = new File(sBuffer.toString());
-                    if (!file.exists()) {
-                        boolean result = file.mkdir();
-                    }
-
-                    window.close();
+        enter.setOnAction(event -> {
+            if (textField.getText() != null && textField2.getText() != null) {
+                StringBuffer sBuffer = new StringBuffer();
+                sBuffer.append(textField2.getText()).append("/").append(textField.getText());
+                textField.clear();
+                textField2.clear();
+                File file = new File(sBuffer.toString());
+                if (!file.exists()) {
+                    boolean result = file.mkdir();
                 }
+
+                window.close();
             }
         });
         Button lookup = new Button("Lookup");
-        lookup.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                DirectoryChooser directoryChooser = new DirectoryChooser();
-                File selectedDirectory = directoryChooser.showDialog(new Stage());
-                textField2.setText(selectedDirectory.getAbsoluteFile().toString());
-            }
+        lookup.setOnAction(event -> {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            File selectedDirectory = directoryChooser.showDialog(new Stage());
+            textField2.setText(selectedDirectory.getAbsoluteFile().toString());
         });
         Label label = new Label("Project Name");
         Label label2 = new Label("Location");
@@ -62,6 +54,5 @@ public class Create {
         Scene scene = new Scene(layout);
         window.setScene(scene);
         window.showAndWait();
-
     }
 }
