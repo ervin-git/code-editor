@@ -47,6 +47,7 @@ public class Controller {
 
     @FXML
     void close(ActionEvent event) {
+        save(event);
         codeArea.clear();
         tree.setRoot(null);
     }
@@ -86,19 +87,21 @@ public class Controller {
 
     @FXML
     void save(ActionEvent event) {
-        ObservableList<CharSequence> paragraph = codeArea.getParagraphs();
-        Iterator<CharSequence> iter = paragraph.iterator();
-        try {
-            BufferedWriter bf = new BufferedWriter(new FileWriter(activeFile));
-            while (iter.hasNext()) {
-                CharSequence seq = iter.next();
-                bf.append(seq);
-                bf.newLine();
+        if (activeFile.exists()) {
+            ObservableList<CharSequence> paragraph = codeArea.getParagraphs();
+            Iterator<CharSequence> iter = paragraph.iterator();
+            try {
+                BufferedWriter bf = new BufferedWriter(new FileWriter(activeFile));
+                while (iter.hasNext()) {
+                    CharSequence seq = iter.next();
+                    bf.append(seq);
+                    bf.newLine();
+                }
+                bf.flush();
+                bf.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            bf.flush();
-            bf.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
