@@ -1,22 +1,22 @@
 package application;
 
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 
 public class Controller {
-    private File activeFile;
+
+    private File activeDir, activeFile;
 
     @FXML
     private ResourceBundle resources;
@@ -54,13 +54,15 @@ public class Controller {
     @FXML
     public void create(ActionEvent event) {
         create.setOnAction(e -> Create.display("Create"));
+        tree.setRoot(null);
+        loadTree(activeDir, null);
     }
 
     @FXML
     void open(ActionEvent event) throws IOException {
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        activeFile = directoryChooser.showDialog(new Stage());
-        loadTree(activeFile, null);
+        activeDir = directoryChooser.showDialog(new Stage());
+        loadTree(activeDir, null);
     }
 
     private void loadTree(File dir, TreeItem<String> parent) {
@@ -84,7 +86,20 @@ public class Controller {
 
     @FXML
     void save(ActionEvent event) {
-        
+        ObservableList<CharSequence> paragraph = codeArea.getParagraphs();
+        Iterator<CharSequence> iter = paragraph.iterator();
+        try {
+            BufferedWriter bf = new BufferedWriter(new FileWriter(activeFile));
+            while (iter.hasNext()) {
+                CharSequence seq = iter.next();
+                bf.append(seq);
+                bf.newLine();
+            }
+            bf.flush();
+            bf.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -104,12 +119,12 @@ public class Controller {
                             pathBuilder.insert(0, "/");
                         }
                     }
-                    String path = activeFile.getPath() + pathBuilder.toString();
-                    File file = new File(path);
-                    if(!file.isDirectory()) {
+                    String path = activeDir.getPath() + pathBuilder.toString();
+                    activeFile = new File(path);
+                    if (!activeFile.isDirectory()) {
                         javafx.application.Platform.runLater(() -> {
                             try {
-                                BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+                                BufferedReader bufferedReader = new BufferedReader(new FileReader(activeFile));
                                 while (bufferedReader.readLine() != null)
                                     codeArea.appendText(bufferedReader.readLine());
                             } catch (IOException e) {

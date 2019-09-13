@@ -32,7 +32,7 @@ public class Create {
             public void handle(ActionEvent event) {
                 if (textField.getText() != null && textField2.getText() != null) {
                     StringBuffer sBuffer = new StringBuffer();
-                    sBuffer.append(textField2.getText()).append("\\\\").append(textField.getText());
+                    sBuffer.append(textField2.getText()).append("/").append(textField.getText());
                     textField.clear();
                     textField2.clear();
                     File file = new File(sBuffer.toString());
