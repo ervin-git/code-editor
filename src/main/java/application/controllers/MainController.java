@@ -1,9 +1,11 @@
-package application;
+package application.controllers;
 
 
+import application.Create;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
@@ -16,8 +18,7 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 
-
-public class Controller {
+public class MainController implements Initializable {
 
     private File activeDir, activeFile;
 
@@ -94,11 +95,13 @@ public class Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            codeArea.clear();
         }
     }
 
-    @FXML
-    void initialize() {
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         assert close != null : "fx:id=\"close\" was not injected: check your FXML file 'codeeditor.fxml'.";
         assert create != null : "fx:id=\"create\" was not injected: check your FXML file 'codeeditor.fxml'.";
         assert open != null : "fx:id=\"open\" was not injected: check your FXML file 'codeeditor.fxml'.";
