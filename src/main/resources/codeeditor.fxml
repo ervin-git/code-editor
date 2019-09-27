@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -11,37 +8,36 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TreeView?>
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.paint.*?>
 <?import javafx.scene.paint.Color?>
-<?import javafx.scene.text.*?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="application.controllers.Controller">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.Controller">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
         <Menu disable="false" mnemonicParsing="false" text="Project">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#open" text="Open" visible="true" fx:id="open" />
-            <MenuItem mnemonicParsing="false" onAction="#create" text="Create" fx:id="create" />
-            <MenuItem mnemonicParsing="false" onAction="#close" text="Close" fx:id="close" />
-            <MenuItem mnemonicParsing="false" onAction="#save" text="Save" fx:id="save" />
+            <MenuItem fx:id="open" mnemonicParsing="false" onAction="#open" text="Open" visible="true" />
+            <MenuItem fx:id="create" mnemonicParsing="false" onAction="#create" text="Create" />
+            <MenuItem fx:id="close" mnemonicParsing="false" onAction="#close" text="Close" />
+            <MenuItem fx:id="save" mnemonicParsing="false" onAction="#save" text="Save" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="File">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#createFile" text="New" fx:id="createFile" />
-            <MenuItem mnemonicParsing="false" onAction="#openFile" text="Open…" fx:id="openFile" />
+            <MenuItem fx:id="createFile" mnemonicParsing="false" onAction="#createFile" text="New" />
+            <MenuItem fx:id="openFile" mnemonicParsing="false" onAction="#openFile" text="Open…" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" onAction="#closeFile" text="Close" fx:id="closeFile" />
-            <MenuItem mnemonicParsing="false" onAction="#saveFile" text="Save" fx:id="saveFile" />
-            <MenuItem mnemonicParsing="false" onAction="#removeFile" text="Remove" fx:id="removeFile" />
+            <MenuItem fx:id="closeFile" mnemonicParsing="false" onAction="#closeFile" text="Close" />
+            <MenuItem fx:id="saveFile" mnemonicParsing="false" onAction="#saveFile" text="Save" />
+            <MenuItem fx:id="removeFile" mnemonicParsing="false" onAction="#removeFile" text="Remove" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Preferences…" />
             <SeparatorMenuItem mnemonicParsing="false" />
@@ -85,14 +81,18 @@
           <content>
             <AnchorPane>
               <children>
-                <TreeView fx:id="tree" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <BorderPane prefHeight="550.0" prefWidth="220.0">
+                           <center>
+                      <TreeView fx:id="tree" BorderPane.alignment="CENTER" />
+                           </center>
+                        </BorderPane>
               </children>
             </AnchorPane>
           </content>
         </ScrollPane>
         <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
           <content>
-            <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="430.0">
+            <AnchorPane id="Content" cache="true" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="430.0">
               <children>
                 <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" style="&#10;" text="Code view" textAlignment="CENTER" wrapText="false">
                   <font>
@@ -102,7 +102,7 @@
                     <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
                   </textFill>
                 </Label>
-                <TextArea fx:id="codeArea" disable="false" layoutX="14.0" layoutY="38.0" prefHeight="493.0" prefWidth="402.0" text="&#10;" visible="true" wrapText="true" />
+                <TextArea fx:id="codeArea" disable="false" layoutX="14.0" layoutY="38.0" text="&#10;" visible="true" wrapText="true" />
                 <Label fx:id="activeFileName" layoutX="181.0" layoutY="14.0" prefWidth="221.0" text="" textFill="#cc3100" underline="true">
                   <font>
                     <Font name="System Bold" size="12.0" />
