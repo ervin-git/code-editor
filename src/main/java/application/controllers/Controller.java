@@ -37,6 +37,7 @@ public class Controller implements Initializable {
     private MenuItem save;
     @FXML
     private TextArea codeArea;
+    private TextFlow codeArea;
     @FXML
     private TreeView<String> tree;
     @FXML
@@ -268,7 +269,7 @@ public class Controller implements Initializable {
 				String old=codeArea.getText();
 				StringBuilder z = new StringBuilder();
 				for(int i=0;i<old.length();i++) {
-					//Text t=new Text();
+					//Text t =new Text();
 					if(i+1<old.length() && old.substring(i,i+1)=="if") {
 						z.append("if").append("<span style=\"color:Blue\">");
 						codeArea.appendText(z.toString());
