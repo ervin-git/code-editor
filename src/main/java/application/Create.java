@@ -21,10 +21,10 @@ public class Create {
     private static TextField textField2 = new TextField();
     private static File dirName;
 
-    public static void display(String title) {
+    public Create() {
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle(title);
+        window.setTitle("Create");
         window.setMinHeight(250);
         window.setMinWidth(250);
         Button enter = new Button("Enter");
@@ -64,14 +64,11 @@ public class Create {
         Scene scene = new Scene(layout);
         window.setScene(scene);
         window.showAndWait();
-
     }
 
-    public static String getTextField() {
+    public String getTextField() {
         return (textField.getText());
     }
 
-    public static File getDirectory() {
-        return (dirName);
-    }
+    public File getDirectory() { return dirName; }
 }

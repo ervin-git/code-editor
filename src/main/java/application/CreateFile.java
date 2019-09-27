@@ -26,20 +26,17 @@ public class CreateFile {
         window.setMinHeight(250);
         window.setMinWidth(250);
         Button enter = new Button("Enter");
-        enter.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (textField.getText() != null) {
-                    File newF = new File(directoryName + "\\" + textField.getText());
-                    try {
-                        newF.createNewFile();
-                        createdFile = newF;
-                    } catch (Exception e) {
-                        System.out.println(e);
-                    }
-                    textField.clear();
-                    window.close();
+        enter.setOnAction(event -> {
+            if (textField.getText() != null) {
+                File newF = new File(directoryName + "\\" + textField.getText());
+                try {
+                    newF.createNewFile();
+                    createdFile = newF;
+                } catch (Exception e) {
+                    System.out.println(e);
                 }
+                textField.clear();
+                window.close();
             }
         });
         Label label = new Label("File Name");

@@ -2,24 +2,24 @@ package application.controllers;
 
 
 import application.Create;
-import application.CreateFile;
-import javafx.collections.ObservableList;
+import application.Project;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.ResourceBundle;
 
 
 public class Controller implements Initializable {
 
+    private Project project;
 
     // Menus
     // Project
@@ -67,7 +67,8 @@ public class Controller implements Initializable {
     private TreeView<String> tree;
 
 
-    private File activeDir, activeFile;
+    private File activeFile;
+
     @FXML
     private ResourceBundle resources;
     @FXML
@@ -80,27 +81,32 @@ public class Controller implements Initializable {
     @FXML
     void project_open(ActionEvent event) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        activeDir = directoryChooser.showDialog(new Stage());
-        loadTree(activeDir, null);
+        File dir = directoryChooser.showDialog(new Stage());
+        project = new Project(dir.getName(), dir);
+        loadTree(project.getDirectory(), null);
     }
 
     @FXML
     void project_create(ActionEvent event) {
-        Create c = new Create();
-        c.display("Create");
-        activeDir = c.getDirectory();
-        loadTree(activeDir, null);
+        if (project != null) project = null; // i feel like this is bad to do
+        Create create = new Create();
+        project = new Project(create.getDirectory().getName(), create.getDirectory());
+        loadTree(project.getDirectory(), null);
     }
 
     @FXML
     void project_close(ActionEvent event) {
+        project = null;
         codeArea.clear();
+        activeFileName.setText("");
+        codeArea.setVisible(false);
         tree.setRoot(null);
     }
 
     @FXML
     void project_save(ActionEvent event) {
-        if (activeFile.exists() && activeFile != null) {
+/*  This is saving a active file, that would be handled in the file save, maybe this can save all the files but we already auto do that, so idk
+          if (activeFile.exists() && activeFile != null) {
             ObservableList<CharSequence> paragraph = codeArea.getParagraphs();
             Iterator<CharSequence> iter = paragraph.iterator();
             try {
@@ -115,37 +121,77 @@ public class Controller implements Initializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     // File Functions
     @FXML
     void file_create(ActionEvent event) {
+        project.createFile();
+        codeArea.setText("");
+        codeArea.setVisible(true);
+        activeFileName.setText("Current File: " + project.getActiveFile().getName());
+        loadTree(project.getDirectory(), null);
+
+        /*
         CreateFile cf = new CreateFile();
         codeArea.setText("");
         codeArea.setVisible(true);
-        cf.display("Create File", activeDir.getPath());
+        cf.display("Create File", project.getActiveFile().getPath());
         activeFile = cf.getCreatedFile();
         activeFileName.setText("Current File: " + activeFile.getName());
-        loadTree(activeDir, null);
+        loadTree(project.getDirectory(), null);
+        */
     }
 
     @FXML
     void file_open(ActionEvent event) {
-        FileChooser fc = new FileChooser();
+        File file;
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open File");
+        fileChooser.setInitialDirectory(project.getDirectory());
+        file = fileChooser.showOpenDialog(new Stage());
+
+        MultipleSelectionModel<TreeItem<String>> multipleSelectionModel = tree.getSelectionModel();
+        for (int i = 0; i < currRoot.getChildren().size(); i++) {
+            if (currRoot.getChildren().get(i).getValue().equals(file.getName()))
+                multipleSelectionModel.select(currRoot.getChildren().get(i));
+        }
+
+        activeFileName.setText("");
+        if (codeArea.isVisible() && !codeArea.getText().equals(""))
+            codeArea.clear();
+        if (!file.isDirectory()) {
+            javafx.application.Platform.runLater(() -> {
+                activeFileName.setText("Current File: " + file.getName());
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+                    String s;
+                    while ((s = bufferedReader.readLine()) != null) {
+                        codeArea.appendText(s);
+                        codeArea.appendText("\n");
+                    }
+                    bufferedReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+/*        FileChooser fc = new FileChooser();
         File newFile;
         fc.setTitle("Open File");
         fc.setInitialDirectory(activeDir);
         newFile = fc.showOpenDialog(new Stage());
         currRoot.getChildren().add(new TreeItem<String>(newFile.toString()));
-        tree.setRoot(currRoot);
+        tree.setRoot(currRoot);*/
     }
 
     @FXML
     void file_close(ActionEvent event) {
         codeArea.clear();
+        codeArea.setVisible(false);
         activeFileName.setText("");
-        activeFile = null;
+        project.setActiveFile(null);
     }
 
     @FXML
@@ -155,31 +201,41 @@ public class Controller implements Initializable {
 
     @FXML
     void file_remove(ActionEvent event) {
-        //Find the current File from the TreeView then remove it from the tree view
-        if (activeFile != null) {
-            String name = getNameOf(activeFile.toString());
-            File toDelete = activeFile;
-            for (int i = 0; i < currRoot.getChildren().size(); i++) {
-                if (activeFile != null && currRoot.getChildren().get(i).getValue().equals(name)) {
-                    TreeItem<String> removed = currRoot.getChildren().get(i);
-                    removed.getParent().getChildren().remove(removed);
-                    //
-                    boolean b = toDelete.delete();
-                    int j = currRoot.getChildren().size();
-                    if (j == 0)
-                        j++;
-                    if (j > -1) {
-                        activeFile = new File(activeDir.getAbsolutePath() + "\\\\" + currRoot.getChildren().get(j - 1).getValue());
-                        activeFileName.setText("Current File: " + activeFile.getName());
-                    } else {
-                        activeFile = null;
-                        activeFileName.setText("none");
-                        codeArea.setText("");
-                        codeArea.setVisible(true);
-                    }
-                }
-            }
+        if (project.getActiveFile() != null) {
+            codeArea.clear();
+            activeFileName.setText("");
+            project.removeFile(project.getActiveFile());
+            loadTree(project.getDirectory(), null);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "No active file to remove", ButtonType.OK);
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+            alert.show();
         }
+//        //Find the current File from the TreeView then remove it from the tree view
+//        if (activeFile != null) {
+//            String name = getNameOf(activeFile.toString());
+//            File toDelete = activeFile;
+//            for (int i = 0; i < currRoot.getChildren().size(); i++) {
+//                if (activeFile != null && currRoot.getChildren().get(i).getValue().equals(name)) {
+//                    TreeItem<String> removed = currRoot.getChildren().get(i);
+//                    removed.getParent().getChildren().remove(removed);
+//                    //
+//                    boolean b = toDelete.delete();
+//                    int j = currRoot.getChildren().size();
+//                    if (j == 0)
+//                        j++;
+//                    if (j > -1) {
+//                        activeFile = new File(activeDir.getAbsolutePath() + "\\\\" + currRoot.getChildren().get(j - 1).getValue());
+//                        activeFileName.setText("Current File: " + activeFile.getName());
+//                    } else {
+//                        activeFile = null;
+//                        activeFileName.setText("none");
+//                        codeArea.setText("");
+//                        codeArea.setVisible(true);
+//                    }
+//                }
+//            }
+//        }
     }
 
     // Compile
@@ -217,14 +273,13 @@ public class Controller implements Initializable {
             currRoot = root;
         } else
             parent.getChildren().add(root);
-        root.setExpanded(false);
     }
 
     // Saves any text changes to the current activeFile
     // Occurs when "save" is pressed or when selecting different file in tree view
     private void saveF() {
         try {
-            FileWriter fw = new FileWriter(activeFile.getAbsolutePath());
+            FileWriter fw = new FileWriter(project.getActiveFile().getAbsolutePath());
             fw.write(codeArea.getText());
             fw.close();
         } catch (Exception e) {
@@ -258,20 +313,20 @@ public class Controller implements Initializable {
                 }
             }
             codeArea.setVisible(true);
-            if (activeFile != null) {
+            if (project.getActiveFile() != null) {
                 saveF();
             }
-            if (codeArea.getText() != "") {
+            if (!codeArea.getText().equals("")) {
                 codeArea.clear();
             }
             //Reading text from selected file and inputing into codeArea
-            String path = activeDir.getPath() + pathBuilder.toString();
-            activeFile = new File(path);
-            if (!activeFile.isDirectory()) {
+            String path = project.getDirectory().getPath() + pathBuilder.toString();
+            project.setActiveFile(new File(path));
+            if (!project.getActiveFile().isDirectory()) {
                 javafx.application.Platform.runLater(() -> {
-                    activeFileName.setText("Current File: " + activeFile.getName());
+                    activeFileName.setText("Current File: " + project.getActiveFile().getName());
                     try {
-                        BufferedReader bufferedReader = new BufferedReader(new FileReader(activeFile));
+                        BufferedReader bufferedReader = new BufferedReader(new FileReader(project.getActiveFile()));
                         String s;
                         while ((s = bufferedReader.readLine()) != null) {
                             codeArea.appendText(s);
@@ -283,7 +338,6 @@ public class Controller implements Initializable {
                     }
 
                 });
-                //Not needed: codeArea.setStyle("-fx-font-family: Times New Roman");
             } else {
                 codeArea.setVisible(false);
                 activeFileName.setText("");
