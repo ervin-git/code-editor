@@ -36,7 +36,6 @@ public class Controller implements Initializable {
     @FXML
     private MenuItem save;
     @FXML
-    private TextArea codeArea;
     private TextFlow codeArea;
     @FXML
     private TreeView<String> tree;
