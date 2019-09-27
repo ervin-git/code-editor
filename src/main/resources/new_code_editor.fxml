@@ -1,65 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
-            prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.Controller">
-    <children>
-        <MenuBar AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <menus>
-                <Menu disable="false" mnemonicParsing="false" text="Project">
-                    <items>
-                        <MenuItem fx:id="open" mnemonicParsing="false" onAction="#open" text="Open" visible="true"/>
-                        <MenuItem fx:id="create" mnemonicParsing="false" onAction="#create" text="Create"/>
-                        <MenuItem fx:id="close" mnemonicParsing="false" onAction="#close" text="Close"/>
-                        <MenuItem fx:id="save" mnemonicParsing="false" onAction="#save" text="Save"/>
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="File">
-                    <items>
-                        <MenuItem fx:id="createFile" mnemonicParsing="false" onAction="#createFile" text="New"/>
-                        <MenuItem fx:id="openFile" mnemonicParsing="false" onAction="#openFile" text="Open…"/>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem fx:id="closeFile" mnemonicParsing="false" onAction="#closeFile" text="Close"/>
-                        <MenuItem fx:id="saveFile" mnemonicParsing="false" onAction="#saveFile" text="Save"/>
-                        <MenuItem fx:id="removeFile" mnemonicParsing="false" onAction="#removeFile" text="Remove"/>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" text="Preferences…"/>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" text="Quit"/>
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Undo"/>
-                        <MenuItem mnemonicParsing="false" text="Redo"/>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" text="Cut"/>
-                        <MenuItem mnemonicParsing="false" text="Copy"/>
-                        <MenuItem mnemonicParsing="false" text="Paste"/>
-                        <MenuItem mnemonicParsing="false" text="Delete"/>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" text="Select All"/>
-                        <MenuItem mnemonicParsing="false" text="Unselect All"/>
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Complie">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="About MyHelloApp"/>
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Execute">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="About MyHelloApp"/>
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Statistics">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="About MyHelloApp"/>
-                    </items>
-                </Menu>
-            </menus>
-        </MenuBar>
-    </children>
+            prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="application.controllers.Controller">
+    <MenuBar AnchorPane.bottomAnchor="571.5" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+             AnchorPane.topAnchor="0.0">
+        <Menu mnemonicParsing="false" text="Project">
+            <MenuItem fx:id="project_open" mnemonicParsing="false" onAction="#project_open" text="Open"/>
+            <MenuItem fx:id="project_create" mnemonicParsing="false" onAction="#project_create" text="Create"/>
+            <MenuItem fx:id="project_close" mnemonicParsing="false" onAction="#project_close" text="Close"/>
+            <MenuItem fx:id="project_save" mnemonicParsing="false" onAction="#project_save" text="Save"/>
+        </Menu>
+        <Menu mnemonicParsing="false" text="File">
+            <MenuItem fx:id="file_create" mnemonicParsing="false" onAction="#file_create" text="New"/>
+            <MenuItem fx:id="file_open" mnemonicParsing="false" onAction="#file_open" text="Open…"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem fx:id="file_close" mnemonicParsing="false" onAction="#file_close" text="Close"/>
+            <MenuItem fx:id="file_save" mnemonicParsing="false" onAction="#file_save" text="Save"/>
+            <MenuItem fx:id="file_remove" mnemonicParsing="false" onAction="#file_remove" text="Remove"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem fx:id="file_pref" mnemonicParsing="false" text="Preferences…"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem fx:id="file_quit" mnemonicParsing="false" text="Quit"/>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+            <MenuItem mnemonicParsing="false" text="Undo"/>
+            <MenuItem mnemonicParsing="false" text="Redo"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem mnemonicParsing="false" text="Cut"/>
+            <MenuItem mnemonicParsing="false" text="Copy"/>
+            <MenuItem mnemonicParsing="false" text="Paste"/>
+            <MenuItem mnemonicParsing="false" text="Delete"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem mnemonicParsing="false" text="Select All"/>
+            <MenuItem mnemonicParsing="false" text="Unselect All"/>
+        </Menu>
+        <Menu fx:id="compile" onAction="#compile" mnemonicParsing="false" text="Compile">
+        </Menu>
+        <Menu fx:id="execute" onAction="#execute" mnemonicParsing="false" text="Execute">
+        </Menu>
+        <Menu fx:id="stats" onAction="#stats" mnemonicParsing="false" text="Statistics">
+        </Menu>
+    </MenuBar>
+    <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="580.0">
+        <HBox id="HBox" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <padding>
+                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+            </padding>
+            <Label maxHeight="1.7976931348623157E308" text="Left status" HBox.hgrow="ALWAYS">
+                <font>
+                    <Font size="11.0" fx:id="x3"/>
+                </font>
+                <textFill>
+                    <Color blue="0.625" green="0.625" red="0.625" fx:id="x4"/>
+                </textFill>
+            </Label>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Label font="$x3" text="Right status" textFill="$x4" HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </AnchorPane>
+    <SplitPane dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0"
+               AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+               AnchorPane.topAnchor="28.5">
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+            <TreeView fx:id="tree" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+        </AnchorPane>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+            <TextArea fx:id="codeArea" disable="false" prefHeight="200.0" prefWidth="200.0" visible="true"
+                      wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0"/>
+            <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="560.0" AnchorPane.leftAnchor="0.0"
+                  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <Label fx:id="activeFileName" textFill="#cc3100">
+                    <padding>
+                        <Insets bottom="2.0" left="5.0" right="5.0" top="2.0"/>
+                    </padding>
+                    <HBox.margin>
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0"/>
+                    </HBox.margin>
+                </Label>
+            </HBox>
+        </AnchorPane>
+    </SplitPane>
 </AnchorPane>
