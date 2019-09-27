@@ -102,7 +102,7 @@
                     <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
                   </textFill>
                 </Label>
-                <TextArea fx:id="codeArea" disable="false" layoutX="14.0" layoutY="38.0" prefHeight="493.0" prefWidth="402.0" text="&#10;" visible="true" wrapText="true" />
+                <TextFlow fx:id="codeArea" disable="false" layoutX="14.0" layoutY="38.0" prefHeight="493.0" prefWidth="402.0" text="&#10;" visible="true" wrapText="true" />
                 <Label fx:id="activeFileName" layoutX="181.0" layoutY="14.0" prefWidth="221.0" text="" textFill="#cc3100" underline="true">
                   <font>
                     <Font name="System Bold" size="12.0" />
