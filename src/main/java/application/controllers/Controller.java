@@ -262,12 +262,11 @@ public class Controller implements Initializable {
         });
         // COLOR CODING not working: Idea is to read in the text from the codeArea
         //
-        codeArea.textProperty().addListener(new ChangeListener<String>() {
-        	 codeArea.textProperty().addListener(new ChangeListener<String>() {
+             codeArea.textProperty().addListener(new ChangeListener <String>() {
         	//@Override
-			public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {
+			public void changed(ObservableValue <? extends String> arg0, String arg1, String arg2) {
 				String old=codeArea.getText();
-				StringBuilder z=new StringBuilder();
+				StringBuilder z = new StringBuilder();
 				for(int i=0;i<old.length();i++) {
 					//Text t=new Text();
 					if(i+1<old.length() && old.substring(i,i+1)=="if") {
@@ -312,6 +311,6 @@ public class Controller implements Initializable {
         		//codeArea.setStyle("-fx-highlight-fill: lightgray; -fx-highlight-text-fill: firebrick; -fx-font-size: 10px;");
         		//codeArea.setStyle("-fx-text-fill: blue ;") ;
         	}
-        });
+        };
     }
 }
