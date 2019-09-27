@@ -28,7 +28,7 @@ public class CreateFile {
         Button enter = new Button("Enter");
         enter.setOnAction(event -> {
             if (textField.getText() != null) {
-                File newF = new File(directoryName + "\\" + textField.getText());
+                File newF = new File(directoryName + "//" + textField.getText());
                 try {
                     newF.createNewFile();
                     createdFile = newF;

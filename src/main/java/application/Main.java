@@ -12,6 +12,8 @@ import java.util.Objects;
 
 public class Main extends Application {
 
+    // FIXME: sometimes the file contents get copied and saved multiple times?
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("new_code_editor.fxml")));

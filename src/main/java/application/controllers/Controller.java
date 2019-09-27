@@ -14,6 +14,9 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
 
@@ -61,21 +64,22 @@ public class Controller implements Initializable {
     @FXML
     private Label activeFileName;
 
+    // Code
+    @FXML
+    private TextArea codeArea;
+
     // Tree
     private TreeItem<String> currRoot;
     @FXML
     private TreeView<String> tree;
 
 
-    private File activeFile;
-
+    // Other
     @FXML
     private ResourceBundle resources;
     @FXML
     private URL location;
 
-    @FXML
-    private TextArea codeArea;
 
     // Project Functions
     @FXML
@@ -92,6 +96,9 @@ public class Controller implements Initializable {
         Create create = new Create();
         project = new Project(create.getDirectory().getName(), create.getDirectory());
         loadTree(project.getDirectory(), null);
+        Path lib = Paths.get(project.getDirectory().getPath() + File.separator + "libs");
+        if (Files.notExists(lib))
+            new File(String.valueOf(lib)).mkdirs();
     }
 
     @FXML
@@ -105,6 +112,7 @@ public class Controller implements Initializable {
 
     @FXML
     void project_save(ActionEvent event) {
+        //TODO: figure out what this does
 /*  This is saving a active file, that would be handled in the file save, maybe this can save all the files but we already auto do that, so idk
           if (activeFile.exists() && activeFile != null) {
             ObservableList<CharSequence> paragraph = codeArea.getParagraphs();
@@ -131,8 +139,15 @@ public class Controller implements Initializable {
         codeArea.setText("");
         codeArea.setVisible(true);
         activeFileName.setText("Current File: " + project.getActiveFile().getName());
+
         loadTree(project.getDirectory(), null);
 
+        // FIXME: Selection to the newly created file doesnt work
+        MultipleSelectionModel<TreeItem<String>> multipleSelectionModel = tree.getSelectionModel();
+        for (int i = 0; i < currRoot.getChildren().size(); i++) {
+            if (currRoot.getChildren().get(i).getValue().equals(project.getActiveFile().getName()))
+                multipleSelectionModel.select(currRoot.getChildren().get(i));
+        }
         /*
         CreateFile cf = new CreateFile();
         codeArea.setText("");
@@ -204,7 +219,7 @@ public class Controller implements Initializable {
         if (project.getActiveFile() != null) {
             codeArea.clear();
             activeFileName.setText("");
-            project.removeFile(project.getActiveFile());
+            project.deleteFile(project.getActiveFile());
             loadTree(project.getDirectory(), null);
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "No active file to remove", ButtonType.OK);
@@ -287,7 +302,7 @@ public class Controller implements Initializable {
         }
     }
 
-    String getNameOf(String s) {
+/*    String getNameOf(String s) {
         String out = "";
         int index = 0;
         for (int i = 0; i < s.length(); i++) {
@@ -296,7 +311,7 @@ public class Controller implements Initializable {
         }
         out = s.substring(index + 1, s.length());
         return out;
-    }
+    }*/
 
     @FXML
     @Override

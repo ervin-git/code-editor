@@ -22,9 +22,6 @@ public class Project {
     private File directory, activeFile;
     private List<File> files = new ArrayList<>();
     private List<String> dependencies = new ArrayList<>();
-    //TODO: lib folder, dependencies
-    //      open/create/remove/close/save file
-    //      reorganize structure of the project
 
     public Project(String name, File directory) {
         this.name = name;
@@ -59,25 +56,20 @@ public class Project {
         return files.contains(file);
     }
 
-    public boolean addFile(File file) {
-        if (!files.contains(file)) {
-            files.add(file);
-
-            return true;
-        } else
-            return false;
+    public void addDependency(String dep) {
+        dependencies.add(dep);
     }
 
-    public boolean removeFile(File file) {
-        if (files.contains(file)) {
-            files.remove(file);
-            if (file.delete()) {
-                activeFile = null;
-                return true;
-            } else
-                return false;
-        } else
-            return false;
+    public void removeDependency(String dep) {
+        dependencies.remove(dep);
+    }
+
+    public void addFile(File file) {
+        files.add(file);
+    }
+
+    public void removeFile(File file) {
+        files.remove(file);
     }
 
     public File getFile(String fileName) {
@@ -101,7 +93,7 @@ public class Project {
         Button enter = new Button("Enter");
         enter.setOnAction(event -> {
             if (textField.getText() != null) {
-                File newF = new File(directory + "\\" + textField.getText());
+                File newF = new File(directory + File.separator + textField.getText());
                 try {
                     newF.createNewFile();
                 } catch (IOException e) {
@@ -123,8 +115,12 @@ public class Project {
         createWindow.showAndWait();
     }
 
-    public void deleteFile() {
-
+    public boolean deleteFile(File file) {
+        if (files.contains(file)) {
+            files.remove(file);
+            return file.delete();
+        } else {
+            return false;
+        }
     }
-
 }
