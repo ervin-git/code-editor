@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.Region;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -183,6 +185,7 @@ public class Controller implements Initializable {
                     BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
                     String s;
                     while ((s = bufferedReader.readLine()) != null) {
+//                        codeArea.getChildren().add(new Text(s));
                         codeArea.appendText(s);
                         codeArea.appendText("\n");
                     }
