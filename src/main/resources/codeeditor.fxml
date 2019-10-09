@@ -19,6 +19,8 @@
 <?import javafx.scene.text.Font?>
 
 <VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.Controller">
+<?import javafx.scene.text.TextFlow?>
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="application.controllers.Controller">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -103,6 +105,7 @@
                   </textFill>
                 </Label>
                 <TextArea fx:id="codeArea" disable="false" layoutX="14.0" layoutY="38.0" text="&#10;" visible="true" wrapText="true" />
+                <TextFlow fx:id="codeArea" disable="false" layoutX="14.0" layoutY="38.0" prefHeight="493.0" prefWidth="402.0" text="&#10;" visible="true" wrapText="true" />
                 <Label fx:id="activeFileName" layoutX="181.0" layoutY="14.0" prefWidth="221.0" text="" textFill="#cc3100" underline="true">
                   <font>
                     <Font name="System Bold" size="12.0" />
