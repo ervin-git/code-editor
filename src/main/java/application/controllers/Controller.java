@@ -3,6 +3,8 @@ package application.controllers;
 
 import application.Create;
 import application.Project;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.scene.web.HTMLEditor;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -36,6 +39,7 @@ public class Controller implements Initializable {
     private MenuItem project_close;
     @FXML
     private MenuItem project_save;
+
     // File
     @FXML
     private MenuItem file_create;
@@ -51,13 +55,17 @@ public class Controller implements Initializable {
     private MenuItem file_pref;
     @FXML
     private MenuItem file_quit;
+
     // Edit
+
     // Compile
     @FXML
     private Menu compile;
+
     // Execute
     @FXML
     private Menu execute;
+
     // Statistics
     @FXML
     private Menu stats;
@@ -68,20 +76,18 @@ public class Controller implements Initializable {
 
     // Code
     @FXML
-    private TextArea codeArea;
+    private HTMLEditor codeArea;
 
     // Tree
     private TreeItem<String> currRoot;
     @FXML
     private TreeView<String> tree;
 
-
     // Other
     @FXML
     private ResourceBundle resources;
     @FXML
     private URL location;
-
 
     // Project Functions
     @FXML
@@ -106,7 +112,8 @@ public class Controller implements Initializable {
     @FXML
     void project_close(ActionEvent event) {
         project = null;
-        codeArea.clear();
+//        codeArea.clear();
+        codeArea.setHtmlText("");
         activeFileName.setText("");
         codeArea.setVisible(false);
         tree.setRoot(null);
@@ -138,7 +145,8 @@ public class Controller implements Initializable {
     @FXML
     void file_create(ActionEvent event) {
         project.createFile();
-        codeArea.setText("");
+//        codeArea.setText("");
+        codeArea.setHtmlText("");
         codeArea.setVisible(true);
         activeFileName.setText("Current File: " + project.getActiveFile().getName());
 
@@ -176,20 +184,21 @@ public class Controller implements Initializable {
         }
 
         activeFileName.setText("");
-        if (codeArea.isVisible() && !codeArea.getText().equals(""))
-            codeArea.clear();
+        if (codeArea.isVisible() && !codeArea.getHtmlText().isEmpty())
+            codeArea.setHtmlText("");
         if (!file.isDirectory()) {
             javafx.application.Platform.runLater(() -> {
                 activeFileName.setText("Current File: " + file.getName());
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
                     String s;
+                    StringBuilder stringBuilder = new StringBuilder();
                     while ((s = bufferedReader.readLine()) != null) {
-//                        codeArea.getChildren().add(new Text(s));
-                        codeArea.appendText(s);
-                        codeArea.appendText("\n");
+                        stringBuilder.append(s);
+                        stringBuilder.append("\n");
                     }
                     bufferedReader.close();
+                    codeArea.setHtmlText(stringBuilder.toString());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -206,7 +215,8 @@ public class Controller implements Initializable {
 
     @FXML
     void file_close(ActionEvent event) {
-        codeArea.clear();
+//        codeArea.clear();
+        codeArea.setHtmlText("");
         codeArea.setVisible(false);
         activeFileName.setText("");
         project.setActiveFile(null);
@@ -220,7 +230,8 @@ public class Controller implements Initializable {
     @FXML
     void file_remove(ActionEvent event) {
         if (project.getActiveFile() != null) {
-            codeArea.clear();
+//            codeArea.clear();
+            codeArea.setHtmlText("");
             activeFileName.setText("");
             project.deleteFile(project.getActiveFile());
             loadTree(project.getDirectory(), null);
@@ -298,7 +309,8 @@ public class Controller implements Initializable {
     private void saveF() {
         try {
             FileWriter fw = new FileWriter(project.getActiveFile().getAbsolutePath());
-            fw.write(codeArea.getText());
+//            fw.write(codeArea.getText());
+            fw.write(codeArea.getHtmlText());
             fw.close();
         } catch (Exception e) {
             System.out.println(e);
@@ -334,8 +346,8 @@ public class Controller implements Initializable {
             if (project.getActiveFile() != null) {
                 saveF();
             }
-            if (!codeArea.getText().equals("")) {
-                codeArea.clear();
+            if (!codeArea.getHtmlText().isEmpty()) {
+                codeArea.setHtmlText("");
             }
             //Reading text from selected file and inputing into codeArea
             String path = project.getDirectory().getPath() + pathBuilder.toString();
@@ -344,12 +356,14 @@ public class Controller implements Initializable {
                 javafx.application.Platform.runLater(() -> {
                     activeFileName.setText("Current File: " + project.getActiveFile().getName());
                     try {
+                        StringBuilder stringBuilder = new StringBuilder();
                         BufferedReader bufferedReader = new BufferedReader(new FileReader(project.getActiveFile()));
                         String s;
                         while ((s = bufferedReader.readLine()) != null) {
-                            codeArea.appendText(s);
-                            codeArea.appendText("\n");
+                            stringBuilder.append(s);
+                            stringBuilder.append("\n");
                         }
+                        codeArea.setHtmlText(stringBuilder.toString());
                         bufferedReader.close();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -363,9 +377,10 @@ public class Controller implements Initializable {
         });
         // COLOR CODING not working: Idea is to read in the text from the codeArea
         //
-             codeArea.textProperty().addListener(new ChangeListener <String>() {
+        /*
+             codeArea.textProperty().addListener(new ChangeListener<String>() {
         	//@Override
-			public void changed(ObservableValue <? extends String> arg0, String arg1, String arg2) {
+			public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {
 				String old=codeArea.getText();
 				StringBuilder z = new StringBuilder();
 				for(int i=0;i<old.length();i++) {
@@ -412,6 +427,6 @@ public class Controller implements Initializable {
         		//codeArea.setStyle("-fx-highlight-fill: lightgray; -fx-highlight-text-fill: firebrick; -fx-font-size: 10px;");
         		//codeArea.setStyle("-fx-text-fill: blue ;") ;
         	}
-        };
+         */
     }
 }
