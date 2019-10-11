@@ -1,0 +1,16 @@
+.keyword {
+    -fx-fill: blue;
+    -fx-font-weight: bold;
+}
+
+.string {
+    -fx-fill: green;
+}
+
+.arithmetic {
+    -fx-fill: red;
+}
+
+.paragraph-box {
+    -fx-background-color: white;
+}

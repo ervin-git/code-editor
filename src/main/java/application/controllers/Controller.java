@@ -3,29 +3,50 @@ package application.controllers;
 
 import application.Create;
 import application.Project;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.Region;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
-import javafx.scene.web.HTMLEditor;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
+import org.reactfx.Subscription;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class Controller implements Initializable {
+
+    private static final String[] KEYWORDS = new String[]{
+            "if", "else", "for", "while"
+    };
+    private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
+    private static final String ARITHMETIC_PATTERN = "([\\/\\+\\-\\*]|[\\|\\&\\^\\!]|[\\=]+[\\=]|[\\!]|[\\=])";
+    private static final String STRING_PATTERN = "\"([^\"\\\\]|\\\\.)*\"";
+    private static final Pattern PATTERN = Pattern.compile(
+            "(?<KEYWORD>" + KEYWORD_PATTERN + ")"
+                    + "|(?<STRING>" + STRING_PATTERN + ")"
+                    + "|(?<ARITHMETIC>" + ARITHMETIC_PATTERN + ")"
+    );
 
     private Project project;
 
@@ -76,7 +97,8 @@ public class Controller implements Initializable {
 
     // Code
     @FXML
-    private HTMLEditor codeArea;
+    private CodeArea codeArea;
+    private ExecutorService executorService;
 
     // Tree
     private TreeItem<String> currRoot;
@@ -112,8 +134,7 @@ public class Controller implements Initializable {
     @FXML
     void project_close(ActionEvent event) {
         project = null;
-//        codeArea.clear();
-        codeArea.setHtmlText("");
+        codeArea.clear();
         activeFileName.setText("");
         codeArea.setVisible(false);
         tree.setRoot(null);
@@ -145,8 +166,7 @@ public class Controller implements Initializable {
     @FXML
     void file_create(ActionEvent event) {
         project.createFile();
-//        codeArea.setText("");
-        codeArea.setHtmlText("");
+        codeArea.clear();
         codeArea.setVisible(true);
         activeFileName.setText("Current File: " + project.getActiveFile().getName());
 
@@ -158,15 +178,6 @@ public class Controller implements Initializable {
             if (currRoot.getChildren().get(i).getValue().equals(project.getActiveFile().getName()))
                 multipleSelectionModel.select(currRoot.getChildren().get(i));
         }
-        /*
-        CreateFile cf = new CreateFile();
-        codeArea.setText("");
-        codeArea.setVisible(true);
-        cf.display("Create File", project.getActiveFile().getPath());
-        activeFile = cf.getCreatedFile();
-        activeFileName.setText("Current File: " + activeFile.getName());
-        loadTree(project.getDirectory(), null);
-        */
     }
 
     @FXML
@@ -184,8 +195,8 @@ public class Controller implements Initializable {
         }
 
         activeFileName.setText("");
-        if (codeArea.isVisible() && !codeArea.getHtmlText().isEmpty())
-            codeArea.setHtmlText("");
+        if (codeArea.isVisible() && codeArea.getLength() == 0)
+            codeArea.clear();
         if (!file.isDirectory()) {
             javafx.application.Platform.runLater(() -> {
                 activeFileName.setText("Current File: " + file.getName());
@@ -198,25 +209,17 @@ public class Controller implements Initializable {
                         stringBuilder.append("\n");
                     }
                     bufferedReader.close();
-                    codeArea.setHtmlText(stringBuilder.toString());
+                    codeArea.replaceText(0, 0, stringBuilder.toString());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             });
         }
-/*        FileChooser fc = new FileChooser();
-        File newFile;
-        fc.setTitle("Open File");
-        fc.setInitialDirectory(activeDir);
-        newFile = fc.showOpenDialog(new Stage());
-        currRoot.getChildren().add(new TreeItem<String>(newFile.toString()));
-        tree.setRoot(currRoot);*/
     }
 
     @FXML
     void file_close(ActionEvent event) {
-//        codeArea.clear();
-        codeArea.setHtmlText("");
+        codeArea.clear();
         codeArea.setVisible(false);
         activeFileName.setText("");
         project.setActiveFile(null);
@@ -230,8 +233,7 @@ public class Controller implements Initializable {
     @FXML
     void file_remove(ActionEvent event) {
         if (project.getActiveFile() != null) {
-//            codeArea.clear();
-            codeArea.setHtmlText("");
+            codeArea.clear();
             activeFileName.setText("");
             project.deleteFile(project.getActiveFile());
             loadTree(project.getDirectory(), null);
@@ -240,31 +242,6 @@ public class Controller implements Initializable {
             alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             alert.show();
         }
-//        //Find the current File from the TreeView then remove it from the tree view
-//        if (activeFile != null) {
-//            String name = getNameOf(activeFile.toString());
-//            File toDelete = activeFile;
-//            for (int i = 0; i < currRoot.getChildren().size(); i++) {
-//                if (activeFile != null && currRoot.getChildren().get(i).getValue().equals(name)) {
-//                    TreeItem<String> removed = currRoot.getChildren().get(i);
-//                    removed.getParent().getChildren().remove(removed);
-//                    //
-//                    boolean b = toDelete.delete();
-//                    int j = currRoot.getChildren().size();
-//                    if (j == 0)
-//                        j++;
-//                    if (j > -1) {
-//                        activeFile = new File(activeDir.getAbsolutePath() + "\\\\" + currRoot.getChildren().get(j - 1).getValue());
-//                        activeFileName.setText("Current File: " + activeFile.getName());
-//                    } else {
-//                        activeFile = null;
-//                        activeFileName.setText("none");
-//                        codeArea.setText("");
-//                        codeArea.setVisible(true);
-//                    }
-//                }
-//            }
-//        }
     }
 
     // Compile
@@ -309,30 +286,72 @@ public class Controller implements Initializable {
     private void saveF() {
         try {
             FileWriter fw = new FileWriter(project.getActiveFile().getAbsolutePath());
-//            fw.write(codeArea.getText());
-            fw.write(codeArea.getHtmlText());
+            fw.write(codeArea.getText());
             fw.close();
         } catch (Exception e) {
             System.out.println(e);
         }
     }
 
-/*    String getNameOf(String s) {
-        String out = "";
-        int index = 0;
-        for (int i = 0; i < s.length(); i++) {
-            if (s.substring(i, i + 1).equals("\\"))
-                index = i;
+    private static StyleSpans<Collection<String>> computeHighlighting(String text) {
+        Matcher matcher = PATTERN.matcher(text);
+        int lastKwEnd = 0;
+        StyleSpansBuilder<Collection<String>> spansBuilder
+                = new StyleSpansBuilder<>();
+        while (matcher.find()) {
+            String styleClass =
+                    matcher.group("KEYWORD") != null ? "keyword" :
+                            matcher.group("ARITHMETIC") != null ? "arithmetic" :
+                                    matcher.group("STRING") != null ? "string" :
+                                            null; /* never happens */
+            assert styleClass != null;
+            spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
+            spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
+            lastKwEnd = matcher.end();
         }
-        out = s.substring(index + 1, s.length());
-        return out;
-    }*/
+        spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
+        return spansBuilder.create();
+    }
+
+    private Task<StyleSpans<Collection<String>>> computeHighlightingAsync() {
+        String text = codeArea.getText();
+        Task<StyleSpans<Collection<String>>> task = new Task<>() {
+            @Override
+            protected StyleSpans<Collection<String>> call() throws Exception {
+                return computeHighlighting(text);
+            }
+        };
+        executorService.execute(task);
+        return task;
+    }
+
+    private void applyHighlighting(StyleSpans<Collection<String>> highlighting) {
+        codeArea.setStyleSpans(0, highlighting);
+    }
+
 
     @FXML
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Selection, opens files
+        executorService = Executors.newSingleThreadExecutor();
+
+        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        Subscription cleanupWhenDone = codeArea.multiPlainChanges()
+                .successionEnds(Duration.ofMillis(250))
+                .supplyTask(this::computeHighlightingAsync)
+                .awaitLatest(codeArea.multiPlainChanges())
+                .filterMap(t -> {
+                    if (t.isSuccess()) {
+                        return Optional.of(t.get());
+                    } else {
+                        t.getFailure().printStackTrace();
+                        return Optional.empty();
+                    }
+                })
+                .subscribe(this::applyHighlighting);
+
         codeArea.setVisible(false);
+
         tree.getSelectionModel().selectedItemProperty().addListener((observable, old_val, new_val) -> {
             StringBuilder pathBuilder = new StringBuilder();
             for (TreeItem<String> item = tree.getSelectionModel().getSelectedItem();
@@ -346,8 +365,8 @@ public class Controller implements Initializable {
             if (project.getActiveFile() != null) {
                 saveF();
             }
-            if (!codeArea.getHtmlText().isEmpty()) {
-                codeArea.setHtmlText("");
+            if (codeArea.getLength() == 0) {
+                codeArea.clear();
             }
             //Reading text from selected file and inputing into codeArea
             String path = project.getDirectory().getPath() + pathBuilder.toString();
@@ -363,7 +382,7 @@ public class Controller implements Initializable {
                             stringBuilder.append(s);
                             stringBuilder.append("\n");
                         }
-                        codeArea.setHtmlText(stringBuilder.toString());
+                        codeArea.replaceText(0, 0, stringBuilder.toString());
                         bufferedReader.close();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -375,58 +394,5 @@ public class Controller implements Initializable {
                 activeFileName.setText("");
             }
         });
-        // COLOR CODING not working: Idea is to read in the text from the codeArea
-        //
-        /*
-             codeArea.textProperty().addListener(new ChangeListener<String>() {
-        	//@Override
-			public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {
-				String old=codeArea.getText();
-				StringBuilder z = new StringBuilder();
-				for(int i=0;i<old.length();i++) {
-					//Text t =new Text();
-					if(i+1<old.length() && old.substring(i,i+1)=="if") {
-						z.append("if").append("<span style=\"color:Blue\">");
-						codeArea.appendText(z.toString());
-					}
-                    else if(i+1<old.length() && old.substring(i,i+1)=="else") {
-                        z.append("else").append("<span style=\"color:Blue\">");
-                        codeArea.appendText(z.toString());
-                    }
-                    else if(i+1<old.length() && old.substring(i,i+1)=="for") {
-                        z.append("for").append("<span style=\"color:Blue\">");
-                        codeArea.appendText(z.toString());
-                    }
-                    else if(i+1<old.length() && old.substring(i,i+1)=="while") {
-                        z.append("while").append("<span style=\"color:Blue\">");
-                        codeArea.appendText(z.toString());
-                    }
-                    else if(i+1<old.length() && old.substring(i,i+1)=="+") {
-                        z.append("+").append("<span style=\"color:Red\">");
-                        codeArea.appendText(z.toString());
-                    }
-                    else if(i+1<old.length() && old.substring(i,i+1)=="-") {
-                        z.append("-").append("<span style=\"color:Red\">");
-                        codeArea.appendText(z.toString());
-                    }
-                    else if(i+1<old.length() && old.substring(i,i+1)=="/") {
-                        z.append("/").append("<span style=\"color:Red\">");
-                        codeArea.appendText(z.toString());
-                    }
-                    else if(i+1<old.length() && old.substring(i,i+1)=="&&") {
-                        z.append("&&").append("<span style=\"color:Red\">");
-                        codeArea.appendText(z.toString());
-                    }
-                    else if(i+1<old.length() && old.substring(i,i+1)=="||") {
-                        z.append("||").append("<span style=\"color:Red\">");
-                        codeArea.appendText(z.toString());
-                    }
-                    codeArea.appendText(old.substring(i,i+1));
-				}
-
-        		//codeArea.setStyle("-fx-highlight-fill: lightgray; -fx-highlight-text-fill: firebrick; -fx-font-size: 10px;");
-        		//codeArea.setStyle("-fx-text-fill: blue ;") ;
-        	}
-         */
     }
 }
