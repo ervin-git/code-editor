@@ -20,7 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
-
+import java.lang.*;
 
 public class Controller implements Initializable {
 
@@ -259,7 +259,19 @@ public class Controller implements Initializable {
     // Compile
     @FXML
     void compile(ActionEvent event) {
+        project.getName();
 
+    }
+    public void main(String[] args)
+    {
+        CompilerClass Project;
+        Project = new project.getName();
+    }
+    private static class CompilerClass
+    {
+        public CompilerClass()
+        {
+        }
     }
 
     // Execute
@@ -362,7 +374,7 @@ public class Controller implements Initializable {
             }
         });
         // COLOR CODING not working: Idea is to read in the text from the codeArea
-        //
+
              codeArea.textProperty().addListener(new ChangeListener <String>() {
         	//@Override
 			public void changed(ObservableValue <? extends String> arg0, String arg1, String arg2) {
@@ -412,6 +424,6 @@ public class Controller implements Initializable {
         		//codeArea.setStyle("-fx-highlight-fill: lightgray; -fx-highlight-text-fill: firebrick; -fx-font-size: 10px;");
         		//codeArea.setStyle("-fx-text-fill: blue ;") ;
         	}
-        };
+        });
     }
 }
