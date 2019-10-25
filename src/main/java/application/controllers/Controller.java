@@ -142,8 +142,7 @@ public class Controller implements Initializable {
 
     @FXML
     void project_save(ActionEvent event) {
-        //TODO: figure out what this does
-/*  This is saving a active file, that would be handled in the file save, maybe this can save all the files but we already auto do that, so idk
+    /*  This is saving a active file, that would be handled in the file save, maybe this can save all the files but we already auto do that, so idk
           if (activeFile.exists() && activeFile != null) {
             ObservableList<CharSequence> paragraph = codeArea.getParagraphs();
             Iterator<CharSequence> iter = paragraph.iterator();
@@ -159,7 +158,8 @@ public class Controller implements Initializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }*/
+        }
+    */
     }
 
     // File Functions
@@ -293,6 +293,8 @@ public class Controller implements Initializable {
         }
     }
 
+    // Gets all the highlighting details from the java-keywords.css file
+    // Uses regex to match keywords/arithmetic functions and strings
     private static StyleSpans<Collection<String>> computeHighlighting(String text) {
         Matcher matcher = PATTERN.matcher(text);
         int lastKwEnd = 0;
@@ -313,6 +315,7 @@ public class Controller implements Initializable {
         return spansBuilder.create();
     }
 
+    // Computes highlighting with async
     private Task<StyleSpans<Collection<String>>> computeHighlightingAsync() {
         String text = codeArea.getText();
         Task<StyleSpans<Collection<String>>> task = new Task<>() {
@@ -325,10 +328,10 @@ public class Controller implements Initializable {
         return task;
     }
 
+    // Applys highlighting
     private void applyHighlighting(StyleSpans<Collection<String>> highlighting) {
         codeArea.setStyleSpans(0, highlighting);
     }
-
 
     @FXML
     @Override
@@ -336,6 +339,7 @@ public class Controller implements Initializable {
         executorService = Executors.newSingleThreadExecutor();
 
         // async project loader, used fxmisc docs as a resource
+        // using sync to prevent duplicates
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
         Subscription cleanupWhenDone = codeArea.multiPlainChanges()
                 .successionEnds(Duration.ofMillis(250))
@@ -352,6 +356,7 @@ public class Controller implements Initializable {
                 .subscribe(this::applyHighlighting);
         codeArea.setVisible(false);
 
+        // chooses selection from tree view
         tree.getSelectionModel().selectedItemProperty().addListener((observable, old_val, new_val) -> {
             StringBuilder pathBuilder = new StringBuilder();
             for (TreeItem<String> item = tree.getSelectionModel().getSelectedItem();

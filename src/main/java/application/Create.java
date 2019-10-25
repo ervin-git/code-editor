@@ -37,7 +37,6 @@ public class Create {
                     dirName = file;
                     file.mkdir();
                 }
-
                 window.close();
             }
         });

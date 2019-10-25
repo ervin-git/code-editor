@@ -13,7 +13,7 @@ import java.util.Objects;
 public class Main extends Application {
 
     // FIXME: sometimes the file contents get copied and saved multiple times?
-    // TODO: color for text, compile, execute
+    // TODO: compile, execute
 
     @Override
     public void start(Stage primaryStage) throws Exception {

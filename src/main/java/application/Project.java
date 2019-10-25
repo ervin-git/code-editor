@@ -34,16 +34,8 @@ public class Project {
         return activeFile;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public File getDirectory() {
         return directory;
-    }
-
-    public List<File> getFiles() {
-        return files;
     }
 
     // Setter
@@ -52,24 +44,12 @@ public class Project {
     }
 
     // Other
-    public boolean contains(File file) {
-        return files.contains(file);
-    }
-
     public void addDependency(String dep) {
         dependencies.add(dep);
     }
 
     public void removeDependency(String dep) {
         dependencies.remove(dep);
-    }
-
-    public void addFile(File file) {
-        files.add(file);
-    }
-
-    public void removeFile(File file) {
-        files.remove(file);
     }
 
     public File getFile(String fileName) {
