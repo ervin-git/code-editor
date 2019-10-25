@@ -40,7 +40,7 @@ public class Controller implements Initializable {
             "if", "else", "for", "while"
     };
     private static final String KEYWORD_PATTERN = "\\b(" + String.join("|", KEYWORDS) + ")\\b";
-    private static final String ARITHMETIC_PATTERN = "([\\/\\+\\-\\*]|[\\|\\&\\^\\!]|[\\=]+[\\=]|[\\!]|[\\=])";
+    private static final String ARITHMETIC_PATTERN = "([/+\\-*]|[|&^!]|[=]+[=]|[!]|[=])";
     private static final String STRING_PATTERN = "\"([^\"\\\\]|\\\\.)*\"";
     private static final Pattern PATTERN = Pattern.compile(
             "(?<KEYWORD>" + KEYWORD_PATTERN + ")"
@@ -335,6 +335,7 @@ public class Controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         executorService = Executors.newSingleThreadExecutor();
 
+        // async project loader, used fxmisc docs as a resource
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
         Subscription cleanupWhenDone = codeArea.multiPlainChanges()
                 .successionEnds(Duration.ofMillis(250))
@@ -349,7 +350,6 @@ public class Controller implements Initializable {
                     }
                 })
                 .subscribe(this::applyHighlighting);
-
         codeArea.setVisible(false);
 
         tree.getSelectionModel().selectedItemProperty().addListener((observable, old_val, new_val) -> {
@@ -387,7 +387,6 @@ public class Controller implements Initializable {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                 });
             } else {
                 codeArea.setVisible(false);
