@@ -3,6 +3,7 @@ package application.controllers;
 
 import application.Create;
 import application.Project;
+import application.Stats;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -259,7 +260,8 @@ public class Controller implements Initializable {
     // Stats
     @FXML
     void stats(ActionEvent event) {
-
+        Stats stats = new Stats(codeArea.getText()); // NO WORk
+        stats.displayStats();
     }
 
     //Extra functions
