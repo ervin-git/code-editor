@@ -1,11 +1,12 @@
 package application;
 
-import application.controllers.StatsController;
-import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 public class Stats {
@@ -16,29 +17,36 @@ public class Stats {
     }
 
     private void computeWordCount(String str) {
-        // TOOD: logic
-        // https://codereview.stackexchange.com/questions/29091/number-of-occurrences-of-each-different-word-in-a-line-of-text
         for (String word : str.split(" "))
-            // If key doesn't exists set default value to 1 otherwise take sum of the current value plus 1
+            // If key doesn't exists set default value to
+            // 1 otherwise take sum of the current value plus 1
             dic.merge(word, 1, Integer::sum);
     }
 
     public void displayStats() {
-        //TODO: new window, to display all the stats?
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            StatsController statsController = new StatsController(dic);
+        Stage window = new Stage();
+        TextArea textArea = new TextArea();
+        VBox vBox = new VBox();
 
-            fxmlLoader.setLocation(getClass().getClassLoader().getResource("stats_page.fxml"));
-            fxmlLoader.setController(statsController);
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setTitle("Statistics");
+        window.setMinHeight(250);
+        window.setMinWidth(250);
 
-            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-            Stage stage = new Stage();
-            stage.setTitle("Statistics");
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+        textArea.appendText("[Word]: [Number of appearances]\n");
+        for (String key : dic.keySet()) {
+            int value = dic.get(key);
+            if (key.equals("\n"))
+                textArea.appendText("<EOL>: " + value + "\n");
+            else
+                textArea.appendText(key + ": " + value + "\n");
         }
+
+        vBox.getChildren().add(textArea);
+        vBox.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(vBox);
+        window.setScene(scene);
+        window.showAndWait();
     }
 }

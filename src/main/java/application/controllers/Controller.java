@@ -90,7 +90,7 @@ public class Controller implements Initializable {
 
     // Statistics
     @FXML
-    private Menu stats;
+    private MenuItem stats;
 
     // Labels
     @FXML
@@ -375,7 +375,7 @@ public class Controller implements Initializable {
             if (codeArea.getLength() == 0) {
                 codeArea.clear();
             }
-            //Reading text from selected file and inputing into codeArea
+            //Reading text from selected file and imputing into codeArea
             String path = project.getDirectory().getPath() + pathBuilder.toString();
             project.setActiveFile(new File(path));
             if (!project.getActiveFile().isDirectory()) {
