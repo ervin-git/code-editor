@@ -21,6 +21,8 @@ import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.reactfx.Subscription;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -262,13 +264,23 @@ public class Controller implements Initializable {
     // Execute
     @FXML
     void execute(ActionEvent event) {
-
+        CompilingClassLoader loader = new CompilingClassLoader();
+        project.getFiles().forEach(f -> {
+            try {
+                Class<?> c = loader.loadClass(f.getName());
+                Object ob = c.getDeclaredConstructor().newInstance();
+                Method main = c.getMethod("main");
+                main.invoke(ob);
+            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     // Stats
     @FXML
     void stats(ActionEvent event) {
-        Stats stats = new Stats(codeArea.getText()); // NO WORk
+        Stats stats = new Stats(codeArea.getText());
         stats.displayStats();
     }
 

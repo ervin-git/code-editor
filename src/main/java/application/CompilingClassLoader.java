@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+// Used the classloader paper, plan is to optimize/cleanup whenever needed
 public class CompilingClassLoader extends ClassLoader {
     // Given a filename, read the entirety of that file from disk
     // and return it as a byte array.
