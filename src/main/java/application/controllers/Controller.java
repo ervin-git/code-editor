@@ -1,6 +1,7 @@
 package application.controllers;
 
 
+import application.CompilingClassLoader;
 import application.Create;
 import application.Project;
 import application.Stats;
@@ -248,7 +249,14 @@ public class Controller implements Initializable {
     // Compile
     @FXML
     void compile(ActionEvent event) {
-
+        CompilingClassLoader loader = new CompilingClassLoader();
+        project.getFiles().forEach(f -> {
+            try {
+                loader.loadClass(f.getName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     // Execute
@@ -369,13 +377,11 @@ public class Controller implements Initializable {
                 }
             }
             codeArea.setVisible(true);
-            if (project.getActiveFile() != null) {
+            if (project.getActiveFile() != null)
                 saveF();
-            }
-            if (codeArea.getLength() == 0) {
+            if (codeArea.getLength() == 0)
                 codeArea.clear();
-            }
-            //Reading text from selected file and imputing into codeArea
+            //Reading text from selected file and inputting into codeArea
             String path = project.getDirectory().getPath() + pathBuilder.toString();
             project.setActiveFile(new File(path));
             if (!project.getActiveFile().isDirectory()) {

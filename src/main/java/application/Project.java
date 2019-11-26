@@ -56,6 +56,10 @@ public class Project {
         return files.stream().filter(f -> f.getName().equals(fileName)).findFirst().orElse(null);
     }
 
+    public List<File> getFiles() {
+        return files;
+    }
+
     public void refreshList() {
         files.clear();
         files.addAll(Arrays.asList(Objects.requireNonNull(directory.listFiles())));
