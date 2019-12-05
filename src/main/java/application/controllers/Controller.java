@@ -1,10 +1,7 @@
 package application.controllers;
 
 
-import application.Compile;
-import application.Create;
-import application.Project;
-import application.Stats;
+import application.*;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,16 +18,12 @@ import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.reactfx.Subscription;
 
 import java.io.*;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -252,13 +245,18 @@ public class Controller implements Initializable {
     @FXML
     void compile(ActionEvent event) throws IOException {
         Compile compile = new Compile(project, project.getActiveFile());
-        compile.compile();
+        List<String> comp = compile.compile();
+        for (String str : comp) {
+            project.addClass(str);
+//            project.addClass(str.substring(str.lastIndexOf("/") + 1, str.length()));
+        }
     }
 
     // Execute
     @FXML
     void execute(ActionEvent event) {
-
+        Execute execute = new Execute(project);
+        execute.execute();
 //        CompilingClassLoader loader = new CompilingClassLoader();
 //        project.getFiles().forEach(f -> {
 //            try {
@@ -386,7 +384,7 @@ public class Controller implements Initializable {
             codeArea.setVisible(true);
             if (project.getActiveFile() != null)
                 saveF();
-    
+
             codeArea.clear();
             //Reading text from selected file and inputting into codeArea
             String path = project.getDirectory().getPath() + pathBuilder.toString();

@@ -21,7 +21,8 @@ public class Project {
     private String name;
     private File directory, activeFile;
     private List<File> files = new ArrayList<>();
-    private List<File> classes = new ArrayList<>();
+    private List<String> classes = new ArrayList<>();
+    private List<String> jars = new ArrayList<>();
     private List<String> dependencies = new ArrayList<>();
 
     public Project(String name, File directory) {
@@ -45,6 +46,10 @@ public class Project {
     }
 
     // Other
+    public String getName() {
+        return name;
+    }
+
     public void addDependency(String dep) {
         dependencies.add(dep);
     }
@@ -57,11 +62,20 @@ public class Project {
         return files;
     }
 
-    public List<File> getClasses() {
+    public List<String> getClasses() {
         return classes;
     }
 
-    public void loadClasses() {
+    public List<String> getJars() {
+        return jars;
+    }
+
+    public void addClass(String str) {
+        classes.add(str);
+    }
+
+    public void addJar(String str) {
+        jars.add(str);
     }
 
     // Functionality
