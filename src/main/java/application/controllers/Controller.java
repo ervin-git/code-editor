@@ -254,20 +254,9 @@ public class Controller implements Initializable {
 
     // Execute
     @FXML
-    void execute(ActionEvent event) throws FileNotFoundException {
+    void execute(ActionEvent event) {
         Execute execute = new Execute(project);
         execute.execute();
-//        CompilingClassLoader loader = new CompilingClassLoader();
-//        project.getFiles().forEach(f -> {
-//            try {
-//                Class<?> c = loader.loadClass(f.getName());
-//                Object ob = c.getDeclaredConstructor().newInstance();
-//                Method main = c.getMethod("main");
-//                main.invoke(ob);
-//            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-//                e.printStackTrace();
-//            }
-//        });
     }
 
     // Stats

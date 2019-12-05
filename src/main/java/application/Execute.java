@@ -15,7 +15,7 @@ public class Execute {
         this.project = project;
     }
 
-    public void execute() throws FileNotFoundException {
+    public void execute() {
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Output");
