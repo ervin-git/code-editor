@@ -386,8 +386,8 @@ public class Controller implements Initializable {
             codeArea.setVisible(true);
             if (project.getActiveFile() != null)
                 saveF();
-            if (codeArea.getLength() == 0)
-                codeArea.clear();
+    
+            codeArea.clear();
             //Reading text from selected file and inputting into codeArea
             String path = project.getDirectory().getPath() + pathBuilder.toString();
             project.setActiveFile(new File(path));
