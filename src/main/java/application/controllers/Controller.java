@@ -1,10 +1,11 @@
-package application.controllers;
+    package application.controllers;
 
 
 import application.CompilingClassLoader;
 import application.Create;
 import application.Project;
 import application.Stats;
+import application.Compile;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -85,11 +86,11 @@ public class Controller implements Initializable {
 
     // Compile
     @FXML
-    private Menu compile;
+    private MenuItem compile;
 
     // Execute
     @FXML
-    private Menu execute;
+    private MenuItem execute;
 
     // Statistics
     @FXML
@@ -118,6 +119,7 @@ public class Controller implements Initializable {
     // Project Functions
     @FXML
     void project_open(ActionEvent event) {
+        System.out.println("project open");
         DirectoryChooser directoryChooser = new DirectoryChooser();
         File dir = directoryChooser.showDialog(new Stage());
         project = new Project(dir.getName(), dir);
@@ -250,15 +252,14 @@ public class Controller implements Initializable {
 
     // Compile
     @FXML
-    void compile(ActionEvent event) {
-        CompilingClassLoader loader = new CompilingClassLoader();
-        project.getFiles().forEach(f -> {
-            try {
-                loader.loadClass(f.getName());
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        });
+    void compile(ActionEvent event) throws IOException {
+        String fileName=project.getActiveFile().getAbsolutePath();
+        String contents=codeArea.getText();
+        System.out.println(fileName);
+        //fileName="C:\\Users\\arman\\Desktop\\New Project\\Main.java";
+        Compile c=new Compile(fileName,contents);
+        c.compile();
+
     }
 
     // Execute
