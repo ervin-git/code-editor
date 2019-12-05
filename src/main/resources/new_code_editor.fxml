@@ -41,9 +41,11 @@
             <MenuItem mnemonicParsing="false" text="Select All"/>
             <MenuItem mnemonicParsing="false" text="Unselect All"/>
         </Menu>
-        <Menu fx:id="compile" mnemonicParsing="false" onAction="#compile" text="Compile">
+        <Menu mnemonicParsing="false"  text="Compile">
+                <MenuItem fx:id="compile" mnemonicParsing="false" onAction="#compile" text="Compile" />
         </Menu>
-        <Menu fx:id="execute" mnemonicParsing="false" onAction="#execute" text="Execute">
+        <Menu  mnemonicParsing="false"  text="Execute">
+                <MenuItem  fx:id="execute" mnemonicParsing="false" onAction="#execute" text="Execute"></MenuItem>
         </Menu>
         <Menu fx:id="" mnemonicParsing="false" text="Statistics">
             <MenuItem fx:id="stats" mnemonicParsing="false" onAction="#stats" text="Load"/>
