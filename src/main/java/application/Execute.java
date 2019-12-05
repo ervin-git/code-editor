@@ -6,9 +6,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class Execute {
     private Project project;
@@ -17,7 +15,7 @@ public class Execute {
         this.project = project;
     }
 
-    public void execute() {
+    public void execute() throws FileNotFoundException {
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Output");
@@ -41,12 +39,21 @@ public class Execute {
         }
 
         // run jar
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+        PrintStream old = System.out;
+        System.setOut(ps);
+
         StringBuilder cmd2 = new StringBuilder("java -verbose jar.jar");
         try {
-            runProcess(cmd.toString());
+            runProcess(cmd2.toString());
         } catch (Exception e) {
             textArea.appendText(e.toString());
         }
+
+        System.out.flush();
+        System.setOut(old);
+        textArea.appendText(baos.toString());
 
         Scene scene = new Scene(layout);
         window.setScene(scene);
@@ -67,6 +74,7 @@ public class Execute {
                 new InputStreamReader(ins));
         while ((line = in.readLine()) != null) {
             System.out.println(name + " " + line);
+//            return name + " " + line;
         }
     }
 }

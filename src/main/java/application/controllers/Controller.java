@@ -254,7 +254,7 @@ public class Controller implements Initializable {
 
     // Execute
     @FXML
-    void execute(ActionEvent event) {
+    void execute(ActionEvent event) throws FileNotFoundException {
         Execute execute = new Execute(project);
         execute.execute();
 //        CompilingClassLoader loader = new CompilingClassLoader();
