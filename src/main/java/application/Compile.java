@@ -1,51 +1,52 @@
 package application;
-import bsh.EvalError;
-import groovy.lang.GroovyShell;
+
 import javafx.scene.Scene;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.codehaus.groovy.*;
-import bsh.Interpreter;
 
-import javax.naming.Binding;
 import javax.tools.*;
-import java.io.*;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
 
 public class Compile {
-    private String sourceCodePath;
-    private String contents;
+    private Project project;
+    private File file;
 
-    public Compile(String s,String c){
-        sourceCodePath=s;
-        contents=c;
+    public Compile(Project project, File file) {
+        this.project = project;
+        this.file = file;
     }
-    public void compile() throws IOException, EvalError {
+
+    public void compile() throws IOException {
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Output");
         window.setMinHeight(250);
         window.setMinWidth(250);
-        Text output=new Text();
-        VBox layout=new VBox();
-        layout.getChildren().addAll(output);
-        JavaCompiler compiler=ToolProvider.getSystemJavaCompiler();
-        int result=compiler.run(null,null,null,sourceCodePath);
-        if(result==0){
-            output.setText("Successful compile.");
+        TextArea textArea = new TextArea();
+        VBox layout = new VBox();
+        layout.getChildren().addAll(textArea);
+
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+
+        StandardJavaFileManager fileManager = compiler.getStandardFileManager(
+                diagnostics, null, null);
+
+        // Compile the file
+        boolean success = compiler.getTask(null, fileManager, null, null, null,
+                fileManager.getJavaFileObjects(file)).call();
+        fileManager.close();
+
+        if (success) {
+            textArea.appendText("Successful compile.\n");
+        } else {
+            textArea.appendText("Unsuccessful compile.\n");
         }
-        else{
-            output.setText("Unsuccessful compile.");
-        }
-        //execute code
-      
-
-
-
-
-
+        textArea.appendText(diagnostics.getDiagnostics().toString());
 
         Scene scene = new Scene(layout);
         window.setScene(scene);

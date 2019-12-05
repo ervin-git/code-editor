@@ -21,6 +21,7 @@ public class Project {
     private String name;
     private File directory, activeFile;
     private List<File> files = new ArrayList<>();
+    private List<File> classes = new ArrayList<>();
     private List<String> dependencies = new ArrayList<>();
 
     public Project(String name, File directory) {
@@ -52,17 +53,15 @@ public class Project {
         dependencies.remove(dep);
     }
 
-    public File getFile(String fileName) {
-        return files.stream().filter(f -> f.getName().equals(fileName)).findFirst().orElse(null);
-    }
-
     public List<File> getFiles() {
         return files;
     }
 
-    public void refreshList() {
-        files.clear();
-        files.addAll(Arrays.asList(Objects.requireNonNull(directory.listFiles())));
+    public List<File> getClasses() {
+        return classes;
+    }
+
+    public void loadClasses() {
     }
 
     // Functionality

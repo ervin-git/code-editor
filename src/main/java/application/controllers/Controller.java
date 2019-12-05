@@ -1,11 +1,10 @@
-    package application.controllers;
+package application.controllers;
 
 
-import application.CompilingClassLoader;
+import application.Compile;
 import application.Create;
 import application.Project;
 import application.Stats;
-import application.Compile;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,7 +21,6 @@ import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.reactfx.Subscription;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.file.Files;
@@ -253,29 +251,25 @@ public class Controller implements Initializable {
     // Compile
     @FXML
     void compile(ActionEvent event) throws IOException {
-        String fileName=project.getActiveFile().getAbsolutePath();
-        String contents=codeArea.getText();
-        System.out.println(fileName);
-        //fileName="C:\\Users\\arman\\Desktop\\New Project\\Main.java";
-        Compile c=new Compile(fileName,contents);
-        c.compile();
-
+        Compile compile = new Compile(project, project.getActiveFile());
+        compile.compile();
     }
 
     // Execute
     @FXML
     void execute(ActionEvent event) {
-        CompilingClassLoader loader = new CompilingClassLoader();
-        project.getFiles().forEach(f -> {
-            try {
-                Class<?> c = loader.loadClass(f.getName());
-                Object ob = c.getDeclaredConstructor().newInstance();
-                Method main = c.getMethod("main");
-                main.invoke(ob);
-            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        });
+
+//        CompilingClassLoader loader = new CompilingClassLoader();
+//        project.getFiles().forEach(f -> {
+//            try {
+//                Class<?> c = loader.loadClass(f.getName());
+//                Object ob = c.getDeclaredConstructor().newInstance();
+//                Method main = c.getMethod("main");
+//                main.invoke(ob);
+//            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+//                e.printStackTrace();
+//            }
+//        });
     }
 
     // Stats
